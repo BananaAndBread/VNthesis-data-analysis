@@ -1,0 +1,7 @@
+from makeInfoAboutGamePlots import make_info_about_game_plots
+from makeBackgroundPlots import make_background_plots
+from make_matrix_plot import make_matrix_plot
+
+make_info_about_game_plots()
+make_background_plots()
+make_matrix_plot()
