@@ -15,8 +15,10 @@ def make_matrix_plot():
         for line in csv.DictReader(data):
             users.append(line)
 
-    satisfaction = eliminate_unknown_from_matrix([list(map(convert_string_to_int, get_column_values(users,
-                                        'Are you in general satisfied with the final resulting game??')))])[0]
+    max_frequency = 8
+    max_satisfaction = 5
+    satisfaction = list(map(lambda x: x/max_satisfaction * max_frequency, eliminate_unknown_from_matrix([list(map(convert_string_to_int, get_column_values(users,
+                                        'Are you in general satisfied with the final resulting game??')))])[0]))
     users = []
     with open(filename) as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
@@ -40,9 +42,9 @@ def make_matrix_plot():
     methodologies_matrix_num  = (get_freq_to_num_matrix(methodologies_matrix_words))
     problems_matrix_num = get_freq_to_num_matrix(problems_matrix_words)
 
-    #add satisfaction to the problems matrix
-    for respondent_problems_vector, respondent_satisfation in zip(problems_matrix_num, satisfaction):
-        respondent_problems_vector.append(respondent_satisfation)
+    # #add satisfaction to the problems matrix
+    # for respondent_problems_vector, respondent_satisfation in zip(problems_matrix_num, satisfaction):
+    #     respondent_problems_vector.append(-respondent_satisfation)
 
     similarity = np.array(sklearn.metrics.pairwise.cosine_similarity(np.array(methodologies_matrix_num).T, np.array(problems_matrix_num).T))
 
@@ -67,3 +69,28 @@ def make_matrix_plot():
     )
     plt.title("Similarity matrix")
     fig.savefig('background/similarity_matrix' + '.png', bbox_inches='tight')
+
+    similarity = np.array(sklearn.metrics.pairwise.cosine_similarity(np.array(methodologies_matrix_num).T,
+                                                                     np.array([satisfaction])))
+
+    # for i in range(similarity.shape[0]):
+    #     similarity[i] -= similarity[i].mean()
+    # similarity *= -1
+
+    sns.set()
+    fig, ax = plt.subplots()
+
+    y_axis_labels = methodologies_short_names
+
+    x_axis_labels = ['Satisfaction']
+    sns.heatmap(
+        similarity,
+        center=0,
+        cmap=sns.diverging_palette(20, 220, n=200),
+        square=True,
+        ax=ax,
+        xticklabels=x_axis_labels,
+        yticklabels=y_axis_labels
+    )
+    plt.title("Similarity matrix")
+    fig.savefig('background/similarity_matrix_satisfaction' + '.png', bbox_inches='tight')

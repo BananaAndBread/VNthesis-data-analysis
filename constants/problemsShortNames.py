@@ -14,5 +14,5 @@ problems_short_names = [
         'Loss of professionals',
         'Many defects',
         'Final budget problems',
-        'Satisfaction'
+        # 'Satisfaction'
     ]

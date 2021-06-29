@@ -152,6 +152,8 @@ def make_info_about_game_plots():
 
     # distribution for each stage
 
+    edgecases = ['Art, style, and assets definition,', ', Art, style, and assets definition' ]
+
     first_stage_index = 33
     last_stage_index = 38
     stages = ['Initiation', 'Team building', 'Pre-production', 'Production', 'Testing', 'Release']
@@ -160,8 +162,15 @@ def make_info_about_game_plots():
         results = []
         column_values = get_column_nonempty_values(respondents, columns[i])
         for column_value in column_values:
-            for split_value in column_value.split(', '):
-                results.append(split_value)
+            processed_column_value = column_value
+            if edgecases[0] in column_value:
+                processed_column_value = processed_column_value.replace(edgecases[0], '')
+                results.append(edgecases[0][0:-1])
+            elif edgecases[1] in column_value:
+                processed_column_value = processed_column_value.replace(edgecases[1], '')
+                results.append(edgecases[1][1:])
+            for split_value in processed_column_value.split(', '):
+                    results.append(split_value)
         [labels, sizes] = count_by_values(results)
         sorted_zip = sorted(zip(labels, sizes), key=lambda x: x[1])
         labels = list(map(lambda x: x[0], sorted_zip))
@@ -176,4 +185,4 @@ def make_info_about_game_plots():
     labels = list(map(lambda x: x[0], sorted_zip))
     sizes = list(map(lambda x: round(x[1]), sorted_zip))
     make_horizontal_bar_chart(sizes, labels, 'infoAboutGame/stages/order',
-                              'Order of stages distribution' + ' (%)')
+                              'Order of stages distribution' + ' (number of people)')

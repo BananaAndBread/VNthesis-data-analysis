@@ -37,6 +37,7 @@ def get_column_nonempty_values(users, column):
             result.append(value)
     return result
 
+
 def get_column_values(users, column):
     result = []
     for user in users:
